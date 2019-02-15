@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= title %></title>
+	<link rel='stylesheet' href='/stylesheets/style.css' />
+	<script type="text/javascript" src="/node_modules/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="/node_modules/socket.io-client/dist/socket.io.js"></script>
+</head>
+<body>
+	<h1><%= title %></h1>
+	<p>Welcome to <%= title %></p>
+	<ul id="chat-list">
+		
+	</ul>
+	<input id="chat">
+	<button id="btn-submit">Kirim</button>
+	<script type="text/javascript">
+		var socket = io();
+		socket.on('connection', function(e) {
+			console.log('connection');
+			socket.on('disconnect', function(e) {
+				console.log('disconnect');
+			});
+		});
+		socket.on('server.to.client', function(e) {
+			console.log('server.to.client');
+			$('#chat-list').append(`<li>${e.message}</li>`)
+		})
+		$('#btn-submit').click(function() {
+			console.log('client.to.server');
+			socket.emit('client.to.server', {message: $('#chat').val()})
+		})
+	</script>
+</body>
+</html>
